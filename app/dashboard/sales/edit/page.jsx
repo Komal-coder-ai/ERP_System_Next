@@ -512,7 +512,7 @@ export default function EditSalePage() {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-neutral-400 font-semibold transition-colors"
+              className="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-black text-white rounded-lg hover:bg-primary-700 disabled:bg-neutral-400 font-semibold transition-colors"
             >
               <SaveIcon style={{ fontSize: '20px' }} />
               {saving ? 'Saving...' : 'Save Changes'}

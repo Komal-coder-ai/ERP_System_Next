@@ -220,7 +220,7 @@ export async function PUT(req) {
       { returnDocument: 'after' }
     );
 
-    if (!result.value) {
+    if (!result._id) {
       return NextResponse.json({ error: 'Sale not found' }, { status: 404 });
     }
 

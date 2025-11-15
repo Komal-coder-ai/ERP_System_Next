@@ -216,8 +216,9 @@ export async function PUT(req) {
       { $set: updateFields },
       { returnDocument: 'after' }
     );
+console.log(result,"resultresult");
 
-    if (!result.value) {
+    if (!result._id) {
       return NextResponse.json({ error: 'Inventory not found' }, { status: 404 });
     }
 
