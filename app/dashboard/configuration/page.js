@@ -159,321 +159,204 @@ export default function ConfigurationPage() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h2 style={styles.title}>Custom Field Configuration</h2>
-        <button
-          onClick={() => {
-            if (showForm) resetForm();
-            else setShowForm(true);
-          }}
-          style={styles.addBtn}
-        >
-          {showForm ? '✕ Cancel' : '+ Add Custom Field'}
-        </button>
+    <div className="min-h-screen bg-neutral-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-neutral-200">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900">⚙️ Configuration</h1>
+            <p className="text-neutral-600 text-sm mt-1">Manage custom product fields</p>
+          </div>
+          <button
+            onClick={() => {
+              if (showForm) resetForm();
+              else setShowForm(true);
+            }}
+            className={`mt-4 sm:mt-0 px-6 py-2.5 rounded-lg font-semibold transition-all ${
+              showForm ? 'btn-danger' : 'btn-primary'
+            }`}
+          >
+            {showForm ? '✕ Cancel' : '+ Add Field'}
+          </button>
+        </div>
+
+        {/* Alerts */}
+        {error && (
+          <div className="alert-danger mb-6 flex items-center space-x-3">
+            <span className="text-xl">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+        {success && (
+          <div className="alert-success mb-6 flex items-center space-x-3">
+            <span className="text-xl">✓</span>
+            <span>{success}</span>
+          </div>
+        )}
+
+        {/* Form */}
+        {showForm && (
+          <div className="card shadow-lg mb-8 border-l-4 border-accent-600">
+            <div className="card-header bg-gradient-to-r from-accent-50 to-secondary-50 border-b border-accent-100">
+              <h2 className="text-2xl font-bold text-neutral-900">
+                {editingId ? '✎ Edit Custom Field' : '➕ Create Custom Field'}
+              </h2>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {/* Field Label */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">
+                      Field Label <span className="text-danger-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="fieldName"
+                      value={formData.fieldName}
+                      onChange={handleInputChange}
+                      required
+                      className="input-field"
+                      placeholder="e.g., Color, Size, Manufacturer"
+                    />
+                  </div>
+
+                  {/* Field Type */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">
+                      Field Type <span className="text-danger-600">*</span>
+                    </label>
+                    <select
+                      name="fieldType"
+                      value={formData.fieldType}
+                      onChange={handleInputChange}
+                      className="input-field"
+                    >
+                      <option value="text">📝 Text</option>
+                      <option value="number">🔢 Number</option>
+                      <option value="radio">🔘 Radio Button</option>
+                      <option value="checkbox">☑️ Checkbox</option>
+                    </select>
+                  </div>
+
+                  {/* Options - Show only for radio/checkbox */}
+                  {(formData.fieldType === 'radio' || formData.fieldType === 'checkbox') && (
+                    <div className="sm:col-span-2 flex flex-col">
+                      <label className="text-sm font-semibold text-neutral-700 mb-2">
+                        Options <span className="text-neutral-500 text-xs">(comma-separated)</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="options"
+                        value={formData.options}
+                        onChange={handleInputChange}
+                        className="input-field"
+                        placeholder="e.g., Red, Blue, Green or Small, Medium, Large"
+                      />
+                      <p className="text-xs text-neutral-600 mt-2 italic">
+                        💡 Enter options separated by commas. Example: Option1, Option2, Option3
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Form Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-neutral-200">
+                  <button type="submit" className="btn-primary px-6 py-2.5 flex-1 sm:flex-none">
+                    {editingId ? '💾 Update Field' : '➕ Create Field'}
+                  </button>
+                  <button type="button" onClick={resetForm} className="btn-outline px-6 py-2.5 flex-1 sm:flex-none">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Fields Grid/Empty State */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-accent-600 rounded-full mb-4 animate-pulse">
+                <span className="text-white text-3xl">⏳</span>
+              </div>
+              <p className="text-neutral-600 font-medium">Loading custom fields...</p>
+            </div>
+          </div>
+        ) : fields.length === 0 ? (
+          <div className="card shadow-lg border-2 border-dashed border-neutral-300 py-16">
+            <div className="text-center">
+              <p className="text-5xl mb-4">🎯</p>
+              <p className="text-xl font-semibold text-neutral-900 mb-2">No Custom Fields Yet</p>
+              <p className="text-neutral-600 mb-6">Create custom fields to customize your product forms!</p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="btn-primary px-6 py-2.5"
+              >
+                ➕ Create First Field
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {fields.map((field) => (
+              <div key={field._id} className="card shadow-md hover:shadow-lg transition-shadow border-t-4 border-primary-600">
+                <div className="p-6">
+                  {/* Card Header */}
+                  <div className="flex justify-between items-start mb-4 pb-4 border-b border-neutral-200">
+                    <div>
+                      <h3 className="text-lg font-bold text-neutral-900">{field.fieldName}</h3>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap ml-2 ${
+                      field.fieldType === 'text' ? 'bg-primary-600' :
+                      field.fieldType === 'number' ? 'bg-secondary-600' :
+                      field.fieldType === 'radio' ? 'bg-accent-600' :
+                      'bg-success-600'
+                    }`}>
+                      {field.fieldType === 'text' && '📝 Text'}
+                      {field.fieldType === 'number' && '🔢 Number'}
+                      {field.fieldType === 'radio' && '🔘 Radio'}
+                      {field.fieldType === 'checkbox' && '☑️ Check'}
+                    </span>
+                  </div>
+
+                  {/* Options List */}
+                  {field.options && field.options.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-sm font-semibold text-neutral-700 mb-2">Options:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {field.options.map((opt, idx) => (
+                          <span key={idx} className="badge-secondary text-xs">
+                            {opt}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-4 border-t border-neutral-200">
+                    <button
+                      onClick={() => handleEdit(field)}
+                      className="flex-1 btn-outline py-2 text-sm font-semibold"
+                    >
+                      ✎ Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(field._id)}
+                      className="flex-1 btn-danger py-2 text-sm font-semibold"
+                    >
+                      🗑 Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-
-      {error && <div style={styles.alert_error}>{error}</div>}
-      {success && <div style={styles.alert_success}>{success}</div>}
-
-      {showForm && (
-        <div style={styles.formContainer}>
-          <h3>{editingId ? 'Edit Custom Field' : 'Create New Custom Field'}</h3>
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <div style={styles.formGrid}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Field Label *</label>
-                <input
-                  type="text"
-                  name="fieldName"
-                  value={formData.fieldName}
-                  onChange={handleInputChange}
-                  required
-                  style={styles.input}
-                  placeholder="e.g., Color, Size, Manufacturer"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Field Type *</label>
-                <select
-                  name="fieldType"
-                  value={formData.fieldType}
-                  onChange={handleInputChange}
-                  style={styles.input}
-                >
-                  <option value="text">Text</option>
-                  <option value="number">Number</option>
-                  <option value="radio">Radio Button</option>
-                  <option value="checkbox">Checkbox</option>
-                </select>
-              </div>
-
-              {(formData.fieldType === 'radio' || formData.fieldType === 'checkbox') && (
-                <div style={{...styles.formGroup, gridColumn: '1 / -1'}}>
-                  <label style={styles.label}>
-                    Options (comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    name="options"
-                    value={formData.options}
-                    onChange={handleInputChange}
-                    style={styles.input}
-                    placeholder="e.g., Red, Blue, Green or Small, Medium, Large"
-                  />
-                  <p style={styles.helperText}>
-                    Enter options separated by commas. Example: Option1, Option2, Option3
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div style={styles.formButtons}>
-              <button type="submit" style={styles.submitBtn}>
-                {editingId ? 'Update Field' : 'Create Field'}
-              </button>
-              <button type="button" onClick={resetForm} style={styles.cancelBtn}>
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {loading ? (
-        <div style={styles.loading}>Loading custom fields...</div>
-      ) : fields.length === 0 ? (
-        <div style={styles.empty}>
-          No custom fields created yet. Add one to customize your products!
-        </div>
-      ) : (
-        <div style={styles.fieldsGrid}>
-          {fields.map((field) => (
-            <div key={field._id} style={styles.fieldCard}>
-              <div style={styles.cardHeader}>
-                <h4 style={styles.fieldName}>{field.fieldName}</h4>
-                <span style={styles.fieldType}>{field.fieldType}</span>
-              </div>
-              {field.options && field.options.length > 0 && (
-                <div style={styles.options}>
-                  <strong>Options:</strong>
-                  <ul style={styles.optionsList}>
-                    {field.options.map((opt, idx) => (
-                      <li key={idx}>{opt}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div style={styles.cardActions}>
-                <button
-                  onClick={() => handleEdit(field)}
-                  style={styles.editBtn}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(field._id)}
-                  style={styles.deleteBtn}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
 
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '20px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '30px',
-    borderBottom: '1px solid #dee2e6',
-    paddingBottom: '20px',
-  },
-  title: {
-    margin: 0,
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  addBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  alert_error: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    padding: '12px',
-    borderRadius: '4px',
-    marginBottom: '20px',
-    border: '1px solid #f5c6cb',
-  },
-  alert_success: {
-    backgroundColor: '#d4edda',
-    color: '#155724',
-    padding: '12px',
-    borderRadius: '4px',
-    marginBottom: '20px',
-    border: '1px solid #c3e6cb',
-  },
-  formContainer: {
-    backgroundColor: '#f9f9f9',
-    padding: '20px',
-    borderRadius: '8px',
-    marginBottom: '30px',
-    border: '1px solid #dee2e6',
-  },
-  form: {
-    marginTop: '20px',
-  },
-  formGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '20px',
-    marginBottom: '20px',
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  label: {
-    marginBottom: '8px',
-    fontWeight: 'bold',
-    color: '#333',
-    fontSize: '14px',
-  },
-  input: {
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '14px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  helperText: {
-    marginTop: '5px',
-    fontSize: '12px',
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  formButtons: {
-    display: 'flex',
-    gap: '10px',
-  },
-  submitBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  cancelBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#6c757d',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '40px',
-    color: '#666',
-  },
-  empty: {
-    textAlign: 'center',
-    padding: '40px',
-    color: '#999',
-    fontSize: '16px',
-  },
-  fieldsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '20px',
-  },
-  fieldCard: {
-    backgroundColor: '#f9f9f9',
-    border: '1px solid #dee2e6',
-    borderRadius: '8px',
-    padding: '20px',
-    transition: 'box-shadow 0.2s',
-  },
-  cardHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'start',
-    marginBottom: '15px',
-    borderBottom: '1px solid #dee2e6',
-    paddingBottom: '10px',
-  },
-  fieldName: {
-    margin: 0,
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  fieldType: {
-    backgroundColor: '#007bff',
-    color: 'white',
-    padding: '4px 8px',
-    borderRadius: '4px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-  },
-  options: {
-    marginBottom: '15px',
-  },
-  optionsList: {
-    margin: '8px 0 0 0',
-    paddingLeft: '20px',
-    fontSize: '13px',
-    color: '#555',
-  },
-  cardActions: {
-    display: 'flex',
-    gap: '8px',
-  },
-  editBtn: {
-    flex: 1,
-    padding: '8px 12px',
-    backgroundColor: '#ffc107',
-    color: '#333',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px',
-    fontWeight: 'bold',
-  },
-  deleteBtn: {
-    flex: 1,
-    padding: '8px 12px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px',
-    fontWeight: 'bold',
-  },
-};

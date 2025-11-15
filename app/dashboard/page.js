@@ -23,115 +23,149 @@ export default function Dashboard() {
     router.push('/login');
   };
 
-  if (!user) return <div style={styles.loading}>Loading...</div>;
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
+            <span className="text-white text-3xl">⏳</span>
+          </div>
+          <p className="text-lg font-medium text-neutral-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.navbar}>
-        <h2 style={styles.brand}>ERP Dashboard</h2>
-        <button onClick={handleLogout} style={styles.logoutBtn}>
-          Logout
-        </button>
-      </div>
-
-      <div style={styles.content}>
-        <h1 style={styles.title}>Welcome, {user.name}!</h1>
-        <div style={styles.card}>
-          <h3>User Information</h3>
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
+    <div className="min-h-screen bg-neutral-100">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Welcome Section */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold text-neutral-900 mb-2">
+            Welcome back, <span className="text-primary-600">{user.name}</span>!
+          </h1>
+          <p className="text-neutral-600">Manage your ERP system efficiently from here</p>
         </div>
 
-        <div style={styles.cardContainer}>
-          <div style={styles.card}>
-            <h3>Dashboard Features</h3>
-            <ul style={styles.list}>
-              <li>View user profile</li>
-              <li>Manage settings</li>
-              <li>Access reports</li>
-            </ul>
+        {/* User Information Card */}
+        <div className="card shadow-md mb-8">
+          <div className="card-header bg-gradient-to-r from-primary-50 to-secondary-50 border-b border-primary-100">
+            <h3 className="text-lg font-semibold text-neutral-900">👤 User Information</h3>
           </div>
-
-          <div style={styles.card}>
-            <h3>Quick Links</h3>
-            <ul style={styles.list}>
-              <li><Link href="/dashboard/profile" style={styles.link}>Edit Profile</Link></li>
-              <li><Link href="/dashboard/settings" style={styles.link}>Settings</Link></li>
-            </ul>
+          <div className="card-body space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <p className="text-sm text-neutral-600 font-medium mb-1">Full Name</p>
+                <p className="text-lg font-semibold text-neutral-900">{user.name}</p>
+              </div>
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <p className="text-sm text-neutral-600 font-medium mb-1">Email</p>
+                <p className="text-lg font-semibold text-neutral-900">{user.email}</p>
+              </div>
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <p className="text-sm text-neutral-600 font-medium mb-1">Role</p>
+                <div className="flex items-center space-x-2">
+                  {user.role === 'admin' ? (
+                    <>
+                      <span className="badge-primary">Admin</span>
+                      <span className="text-2xl">👑</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="badge-secondary">User</span>
+                      <span className="text-2xl">👤</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Features Card */}
+          <div className="card shadow-md">
+            <div className="card-header bg-gradient-to-r from-secondary-50 to-accent-50 border-b border-secondary-100">
+              <h3 className="text-lg font-semibold text-neutral-900">⚙️ System Features</h3>
+            </div>
+            <div className="card-body">
+              <ul className="space-y-3">
+                <li className="flex items-start space-x-3">
+                  <span className="text-primary-600 font-bold mt-1">✓</span>
+                  <span className="text-neutral-700">Product Management - Create and manage product catalog</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <span className="text-primary-600 font-bold mt-1">✓</span>
+                  <span className="text-neutral-700">Custom Fields - Add custom properties to products</span>
+                </li>
+                <li className="flex items-start space-x-3">
+                  <span className="text-primary-600 font-bold mt-1">✓</span>
+                  <span className="text-neutral-700">Field Configuration - Manage custom field types</span>
+                </li>
+                {user.role === 'admin' && (
+                  <li className="flex items-start space-x-3">
+                    <span className="text-primary-600 font-bold mt-1">✓</span>
+                    <span className="text-neutral-700">Admin Panel - User and role management</span>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Quick Links Card */}
+          <div className="card shadow-md">
+            <div className="card-header bg-gradient-to-r from-accent-50 to-secondary-50 border-b border-accent-100">
+              <h3 className="text-lg font-semibold text-neutral-900">🔗 Quick Links</h3>
+            </div>
+            <div className="card-body">
+              <nav className="space-y-3">
+                <Link
+                  href="/dashboard/products"
+                  className="block p-3 bg-primary-50 hover:bg-primary-100 border border-primary-200 rounded-lg text-primary-700 font-medium transition-colors"
+                >
+                  📦 View Products
+                </Link>
+                <Link
+                  href="/dashboard/configuration"
+                  className="block p-3 bg-secondary-50 hover:bg-secondary-100 border border-secondary-200 rounded-lg text-secondary-700 font-medium transition-colors"
+                >
+                  ⚙️ Configure Fields
+                </Link>
+                {user.role === 'admin' && (
+                  <Link
+                    href="/admin"
+                    className="block p-3 bg-accent-50 hover:bg-accent-100 border border-accent-200 rounded-lg text-accent-700 font-medium transition-colors"
+                  >
+                    👑 Admin Panel
+                  </Link>
+                )}
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        {/* Statistics/Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="p-6 bg-white rounded-lg shadow border-l-4 border-primary-600">
+            <p className="text-sm text-neutral-600 font-medium mb-1">System Status</p>
+            <p className="text-2xl font-bold text-primary-600">🟢 Active</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow border-l-4 border-secondary-600">
+            <p className="text-sm text-neutral-600 font-medium mb-1">Last Login</p>
+            <p className="text-sm text-neutral-700 font-semibold">Today</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow border-l-4 border-accent-600">
+            <p className="text-sm text-neutral-600 font-medium mb-1">Account Type</p>
+            <p className="text-sm text-neutral-700 font-semibold capitalize">{user.role}</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow border-l-4 border-success-600">
+            <p className="text-sm text-neutral-600 font-medium mb-1">Connection</p>
+            <p className="text-sm text-success-600 font-semibold">✓ Secure</p>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    fontFamily: 'Arial, sans-serif',
-  },
-  navbar: {
-    backgroundColor: '#333',
-    color: 'white',
-    padding: '20px 40px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  brand: {
-    margin: 0,
-    fontSize: '24px',
-  },
-  logoutBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  content: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  title: {
-    fontSize: '32px',
-    fontWeight: 'bold',
-    marginBottom: '30px',
-    color: '#333',
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    marginBottom: '20px',
-  },
-  cardContainer: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '20px',
-  },
-  list: {
-    paddingLeft: '20px',
-    lineHeight: '1.8',
-  },
-  link: {
-    color: '#007bff',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-  },
-  loading: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    fontSize: '18px',
-    fontFamily: 'Arial, sans-serif',
-  },
-};

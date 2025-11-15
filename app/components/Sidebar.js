@@ -3,6 +3,14 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import HomeIcon from '@mui/icons-material/Home';
+import StorageIcon from '@mui/icons-material/Storage';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import InventoryIcon from '@mui/icons-material/Inventory2';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -18,128 +26,66 @@ export default function Sidebar() {
   const isActive = (path) => pathname === path;
 
   const menuItems = [
-    { label: 'Home', icon: '🏠', path: '/dashboard' },
-    { label: 'Products', icon: '📦', path: '/dashboard/products' },
-    { label: 'Configuration', icon: '⚙️', path: '/dashboard/configuration' },
+    { label: 'Home', icon: HomeIcon, path: '/dashboard' },
+    { label: 'Products', icon: StorageIcon, path: '/dashboard/products' },
+    { label: 'Inventory', icon: InventoryIcon, path: '/dashboard/inventory' },
+    { label: 'Sales', icon: ShoppingCartIcon, path: '/dashboard/sales' },
+    { label: 'Configuration', icon: SettingsIcon, path: '/dashboard/configuration' },
   ];
 
   return (
-    <div style={{...styles.container, width: collapsed ? '60px' : '250px'}}>
+    <div className={`fixed left-0 top-0 h-screen bg-neutral-900 border-r border-neutral-800 flex flex-col z-50 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
       {/* Header */}
-      <div style={styles.header}>
+      <div className="px-6 py-6 border-b border-neutral-800 flex items-center gap-3">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          style={styles.toggleBtn}
+          className="p-2 rounded-lg hover:bg-neutral-800 transition-colors text-neutral-400 hover:text-white"
           title="Toggle Sidebar"
         >
-          {collapsed ? '→' : '←'}
+          {collapsed ? <MenuIcon /> : <CloseIcon />}
         </button>
-        {!collapsed && <h2 style={styles.logo}>ERP System</h2>}
+        {!collapsed && (
+          <div className="flex items-center space-x-2">
+            <div className="inline-flex items-center justify-center w-8 h-8 bg-primary-600 rounded-lg">
+              <span className="text-white text-sm font-bold">ERP</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation Menu */}
-      <nav style={styles.nav}>
-        {menuItems.map((item) => (
-          <Link key={item.path} href={item.path} style={{textDecoration: 'none'}}>
-            <div
-              style={{
-                ...styles.menuItem,
-                backgroundColor: isActive(item.path) ? '#0056b3' : 'transparent',
-                color: isActive(item.path) ? 'white' : '#333',
-              }}
-              title={item.label}
-            >
-              <span style={styles.icon}>{item.icon}</span>
-              {!collapsed && <span style={styles.label}>{item.label}</span>}
-            </div>
-          </Link>
-        ))}
+      <nav className="flex-1 py-6 overflow-y-auto px-3 space-y-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link key={item.path} href={item.path}>
+              <div
+                className={`px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-all duration-200 ${
+                  isActive(item.path)
+                    ? 'bg-primary-600 text-white shadow-md'
+                    : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
+                }`}
+                title={item.label}
+              >
+                <Icon style={{ fontSize: '20px' }} />
+                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+              </div>
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Logout Button */}
-      <div style={styles.footer}>
+      <div className="px-3 py-6 border-t border-neutral-800">
         <button
           onClick={handleLogout}
-          style={{
-            ...styles.logoutBtn,
-            width: collapsed ? '40px' : '100%',
-          }}
+          className="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center gap-2 justify-center"
           title="Logout"
         >
-          {collapsed ? '🚪' : 'Logout'}
+          <LogoutIcon style={{ fontSize: '18px' }} />
+          {!collapsed && 'Logout'}
         </button>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    height: '100vh',
-    backgroundColor: '#f8f9fa',
-    border: '1px solid #dee2e6',
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'width 0.3s ease',
-    position: 'fixed',
-    left: 0,
-    top: 0,
-    zIndex: 1000,
-  },
-  header: {
-    padding: '20px',
-    borderBottom: '1px solid #dee2e6',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
-  toggleBtn: {
-    background: 'none',
-    border: 'none',
-    fontSize: '18px',
-    cursor: 'pointer',
-    padding: '5px',
-  },
-  logo: {
-    margin: 0,
-    fontSize: '18px',
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  nav: {
-    flex: 1,
-    padding: '20px 0',
-    overflow: 'y-auto',
-  },
-  menuItem: {
-    padding: '15px 20px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-    borderLeft: '4px solid transparent',
-  },
-  icon: {
-    fontSize: '20px',
-    minWidth: '24px',
-  },
-  label: {
-    fontSize: '14px',
-    fontWeight: '500',
-  },
-  footer: {
-    padding: '20px',
-    borderTop: '1px solid #dee2e6',
-  },
-  logoutBtn: {
-    padding: '10px 15px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-};

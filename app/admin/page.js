@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -54,137 +55,187 @@ export default function AdminDashboard() {
     router.push('/login');
   };
 
-  if (!user) return <div style={styles.loading}>Loading...</div>;
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-danger-600 rounded-full mb-4">
+            <span className="text-white text-3xl">⏳</span>
+          </div>
+          <p className="text-lg font-medium text-neutral-600">Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.navbar}>
-        <h2 style={styles.brand}>Admin Dashboard</h2>
-        <button onClick={handleLogout} style={styles.logoutBtn}>
-          Logout
-        </button>
-      </div>
+    <div className="min-h-screen bg-neutral-100">
+      {/* Header/Navbar */}
+      <nav className="bg-neutral-900 text-white shadow-lg border-b border-neutral-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="inline-flex items-center justify-center w-10 h-10 bg-danger-600 rounded-lg">
+                <span className="text-white font-bold">👑</span>
+              </div>
+              <h2 className="text-xl font-bold">Admin Dashboard</h2>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="btn-danger px-5 py-2 text-sm font-medium bg-danger-700 hover:bg-danger-600"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </nav>
 
-      <div style={styles.content}>
-        <h1 style={styles.title}>Admin Panel</h1>
-
-        <div style={styles.card}>
-          <h3>Welcome, {user.name}</h3>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Role:</strong> {user.role}</p>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Welcome Section */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold text-neutral-900 mb-2">
+            Admin Panel <span className="text-danger-600">👑</span>
+          </h1>
+          <p className="text-neutral-600">Manage users and system configuration</p>
         </div>
 
-        <div style={styles.card}>
-          <h2>All Users</h2>
-          {loading ? (
-            <p>Loading users...</p>
-          ) : (
-            <table style={styles.table}>
-              <thead>
-                <tr style={styles.headerRow}>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Email</th>
-                  <th style={styles.th}>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users && users.length > 0 ? (
-                  users.map((u) => (
-                    <tr key={u._id} style={styles.row}>
-                      <td style={styles.td}>{u.name}</td>
-                      <td style={styles.td}>{u.email}</td>
-                      <td style={styles.td}>{u.role}</td>
+        {/* Admin Info Card */}
+        <div className="card shadow-md mb-8 border-l-4 border-danger-600">
+          <div className="card-header bg-gradient-to-r from-danger-50 to-neutral-50 border-b border-danger-100">
+            <h3 className="text-lg font-semibold text-neutral-900">👤 Admin Information</h3>
+          </div>
+          <div className="card-body">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <p className="text-sm text-neutral-600 font-medium mb-1">Name</p>
+                <p className="text-lg font-semibold text-neutral-900">{user.name}</p>
+              </div>
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <p className="text-sm text-neutral-600 font-medium mb-1">Email</p>
+                <p className="text-lg font-semibold text-neutral-900">{user.email}</p>
+              </div>
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                <p className="text-sm text-neutral-600 font-medium mb-1">Role</p>
+                <div className="flex items-center space-x-2">
+                  <span className="badge-danger">Admin</span>
+                  <span className="text-2xl">👑</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Link href="/dashboard/inventory">
+            <div className="card shadow-md hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-primary-600">
+              <div className="card-body">
+                <h3 className="text-lg font-bold text-neutral-900 mb-2">📦 Inventory Management</h3>
+                <p className="text-sm text-neutral-600 mb-4">Manage stock levels and inventory items</p>
+                <button className="text-primary-600 font-semibold text-sm hover:text-primary-700">
+                  Go to Inventory →
+                </button>
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/dashboard/products">
+            <div className="card shadow-md hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-blue-600">
+              <div className="card-body">
+                <h3 className="text-lg font-bold text-neutral-900 mb-2">🛍️ Products</h3>
+                <p className="text-sm text-neutral-600 mb-4">Manage products and catalog</p>
+                <button className="text-blue-600 font-semibold text-sm hover:text-blue-700">
+                  Go to Products →
+                </button>
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/dashboard/configuration">
+            <div className="card shadow-md hover:shadow-lg transition-shadow cursor-pointer border-l-4 border-green-600">
+              <div className="card-body">
+                <h3 className="text-lg font-bold text-neutral-900 mb-2">⚙️ Configuration</h3>
+                <p className="text-sm text-neutral-600 mb-4">Configure custom fields</p>
+                <button className="text-green-600 font-semibold text-sm hover:text-green-700">
+                  Go to Config →
+                </button>
+              </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* Users Table Card */}
+        <div className="card shadow-md">
+          <div className="card-header bg-gradient-to-r from-danger-50 to-neutral-50 border-b border-danger-100">
+            <h2 className="text-2xl font-bold text-neutral-900">👥 System Users</h2>
+          </div>
+          <div className="card-body">
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-danger-600 rounded-full mb-3 animate-pulse">
+                    <span className="text-white text-xl">⏳</span>
+                  </div>
+                  <p className="text-neutral-600 font-medium">Loading users...</p>
+                </div>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gradient-to-r from-danger-50 to-neutral-50 border-b-2 border-danger-200">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">User Name</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Email</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Role</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Status</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3" style={styles.td}>
-                      No users found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          )}
+                  </thead>
+                  <tbody className="divide-y divide-neutral-200">
+                    {users && users.length > 0 ? (
+                      users.map((u) => (
+                        <tr key={u._id} className="hover:bg-neutral-50 transition-colors">
+                          <td className="px-6 py-4">
+                            <p className="font-semibold text-neutral-900">{u.name}</p>
+                          </td>
+                          <td className="px-6 py-4 text-neutral-700 font-mono text-sm">{u.email}</td>
+                          <td className="px-6 py-4">
+                            {u.role === 'admin' ? (
+                              <span className="badge-danger inline-flex items-center space-x-1">
+                                <span>👑</span>
+                                <span className="capitalize">{u.role}</span>
+                              </span>
+                            ) : (
+                              <span className="badge-secondary inline-flex items-center space-x-1">
+                                <span>👤</span>
+                                <span className="capitalize">{u.role}</span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="badge-success text-xs">
+                              ✓ Active
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="px-6 py-8 text-center text-neutral-600">
+                          <p className="text-lg">No users found</p>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+          <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-200 text-sm text-neutral-600">
+            Total Users: <span className="font-bold text-neutral-900">{users.length}</span>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-    fontFamily: 'Arial, sans-serif',
-  },
-  navbar: {
-    backgroundColor: '#1a1a1a',
-    color: 'white',
-    padding: '20px 40px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  brand: {
-    margin: 0,
-    fontSize: '24px',
-  },
-  logoutBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  content: {
-    padding: '40px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  title: {
-    fontSize: '32px',
-    fontWeight: 'bold',
-    marginBottom: '30px',
-    color: '#333',
-  },
-  card: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    marginBottom: '20px',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '20px',
-  },
-  headerRow: {
-    backgroundColor: '#f0f0f0',
-  },
-  th: {
-    padding: '12px',
-    textAlign: 'left',
-    borderBottom: '2px solid #ddd',
-    fontWeight: 'bold',
-  },
-  td: {
-    padding: '12px',
-    borderBottom: '1px solid #ddd',
-  },
-  row: {
-    backgroundColor: 'white',
-  },
-  loading: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    fontSize: '18px',
-    fontFamily: 'Arial, sans-serif',
-  },
-};

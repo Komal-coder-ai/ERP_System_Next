@@ -185,405 +185,319 @@ export default function ProductsPage() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <h2 style={styles.title}>Products</h2>
-        <button
-          onClick={() => {
-            if (showForm) resetForm();
-            else setShowForm(true);
-          }}
-          style={styles.addBtn}
-        >
-          {showForm ? '✕ Cancel' : '+ Add Product'}
-        </button>
-      </div>
+    <div className="min-h-screen bg-neutral-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-neutral-200">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900">📦 Products</h1>
+            <p className="text-neutral-600 text-sm mt-1">Manage your product catalog</p>
+          </div>
+          <button
+            onClick={() => {
+              if (showForm) resetForm();
+              else setShowForm(true);
+            }}
+            className={`mt-4 sm:mt-0 px-6 py-2.5 rounded-lg font-semibold transition-all ${
+              showForm
+                ? 'btn-danger'
+                : 'btn-success'
+            }`}
+          >
+            {showForm ? '✕ Cancel' : '+ Add Product'}
+          </button>
+        </div>
 
-      {error && <div style={styles.alert_error}>{error}</div>}
-      {success && <div style={styles.alert_success}>{success}</div>}
+        {/* Alerts */}
+        {error && (
+          <div className="alert-danger mb-6 flex items-center space-x-3">
+            <span className="text-xl">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+        {success && (
+          <div className="alert-success mb-6 flex items-center space-x-3">
+            <span className="text-xl">✓</span>
+            <span>{success}</span>
+          </div>
+        )}
 
-      {showForm && (
-        <div style={styles.formContainer}>
-          <h3>{editingId ? 'Edit Product' : 'Create New Product'}</h3>
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <div style={styles.formGrid}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Product Name *</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  style={styles.input}
-                  placeholder="Enter product name"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>SKU *</label>
-                <input
-                  type="text"
-                  name="sku"
-                  value={formData.sku}
-                  onChange={handleInputChange}
-                  required
-                  style={styles.input}
-                  placeholder="Enter SKU"
-                  disabled={!!editingId}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Price *</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                  required
-                  step="0.01"
-                  style={styles.input}
-                  placeholder="Enter price"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Quantity</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleInputChange}
-                  style={styles.input}
-                  placeholder="Enter quantity"
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Category</label>
-                <input
-                  type="text"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  style={styles.input}
-                  placeholder="Enter category"
-                />
-              </div>
-
-              <div style={{...styles.formGroup, gridColumn: '1 / -1'}}>
-                <label style={styles.label}>Description</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  style={{...styles.input, minHeight: '80px', resize: 'none'}}
-                  placeholder="Enter product description"
-                />
-              </div>
-
-              {customFields.map((field) => (
-                <div key={field._id} style={{...styles.formGroup}}>
-                  <label style={styles.label}>{field.fieldName}</label>
-                  {field.fieldType === 'text' && (
+        {/* Form */}
+        {showForm && (
+          <div className="card shadow-lg mb-8 border-l-4 border-primary-600">
+            <div className="card-header bg-gradient-to-r from-primary-50 to-secondary-50 border-b border-primary-100">
+              <h2 className="text-2xl font-bold text-neutral-900">
+                {editingId ? '✎ Edit Product' : '➕ Create New Product'}
+              </h2>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {/* Product Name */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">
+                      Product Name <span className="text-danger-600">*</span>
+                    </label>
                     <input
                       type="text"
-                      value={(formData.customFieldValues && formData.customFieldValues[field._id]) || ''}
-                      onChange={(e) =>
-                        handleCustomFieldChange(field._id, e.target.value)
-                      }
-                      style={styles.input}
-                      placeholder={`Enter ${field.fieldName}`}
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="input-field"
+                      placeholder="Enter product name"
                     />
-                  )}
-                  {field.fieldType === 'number' && (
+                  </div>
+
+                  {/* SKU */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">
+                      SKU <span className="text-danger-600">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="sku"
+                      value={formData.sku}
+                      onChange={handleInputChange}
+                      required
+                      className="input-field disabled:bg-neutral-100"
+                      placeholder="Enter SKU"
+                      disabled={!!editingId}
+                    />
+                  </div>
+
+                  {/* Price */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">
+                      Price <span className="text-danger-600">*</span>
+                    </label>
                     <input
                       type="number"
-                      value={(formData.customFieldValues && formData.customFieldValues[field._id]) || ''}
-                      onChange={(e) =>
-                        handleCustomFieldChange(field._id, e.target.value)
-                      }
-                      style={styles.input}
-                      placeholder={`Enter ${field.fieldName}`}
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      required
+                      step="0.01"
+                      className="input-field"
+                      placeholder="0.00"
                     />
-                  )}
-                  {field.fieldType === 'radio' && (
-                    <div style={{display: 'flex', gap: '15px'}}>
-                      {field.options.map((option) => (
-                        <label key={option} style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-                          <input
-                            type="radio"
-                            name={field._id}
-                            value={option}
-                            checked={(formData.customFieldValues && formData.customFieldValues[field._id]) === option}
-                            onChange={(e) =>
-                              handleCustomFieldChange(field._id, e.target.value)
-                            }
-                          />
-                          {option}
-                        </label>
-                      ))}
+                  </div>
+
+                  {/* Quantity */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">Quantity</label>
+                    <input
+                      type="number"
+                      name="quantity"
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      className="input-field"
+                      placeholder="0"
+                    />
+                  </div>
+
+                  {/* Category */}
+                  <div className="flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">Category</label>
+                    <input
+                      type="text"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="input-field"
+                      placeholder="e.g. Electronics"
+                    />
+                  </div>
+
+                  {/* Description - Full Width */}
+                  <div className="sm:col-span-2 lg:col-span-3 flex flex-col">
+                    <label className="text-sm font-semibold text-neutral-700 mb-2">Description</label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      className="input-field min-h-24 resize-none"
+                      placeholder="Enter detailed product description"
+                    />
+                  </div>
+
+                  {/* Custom Fields */}
+                  {customFields.map((field) => (
+                    <div key={field._id} className={field.fieldType === 'checkbox' ? 'sm:col-span-2 lg:col-span-3' : ''}>
+                      <label className="text-sm font-semibold text-neutral-700 mb-2 block">{field.fieldName}</label>
+                      
+                      {field.fieldType === 'text' && (
+                        <input
+                          type="text"
+                          value={(formData.customFieldValues && formData.customFieldValues[field._id]) || ''}
+                          onChange={(e) => handleCustomFieldChange(field._id, e.target.value)}
+                          className="input-field"
+                          placeholder={`Enter ${field.fieldName}`}
+                        />
+                      )}
+
+                      {field.fieldType === 'number' && (
+                        <input
+                          type="number"
+                          value={(formData.customFieldValues && formData.customFieldValues[field._id]) || ''}
+                          onChange={(e) => handleCustomFieldChange(field._id, e.target.value)}
+                          className="input-field"
+                          placeholder={`Enter ${field.fieldName}`}
+                        />
+                      )}
+
+                      {field.fieldType === 'radio' && (
+                        <div className="flex flex-wrap gap-4">
+                          {field.options.map((option) => (
+                            <label key={option} className="flex items-center space-x-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name={field._id}
+                                value={option}
+                                checked={(formData.customFieldValues && formData.customFieldValues[field._id]) === option}
+                                onChange={(e) => handleCustomFieldChange(field._id, e.target.value)}
+                                className="w-4 h-4 accent-primary-600"
+                              />
+                              <span className="text-neutral-700">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+
+                      {field.fieldType === 'checkbox' && (
+                        <div className="space-y-3">
+                          {field.options.map((option) => (
+                            <label key={option} className="flex items-center space-x-2 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                value={option}
+                                checked={
+                                  formData.customFieldValues &&
+                                  Array.isArray(formData.customFieldValues[field._id]) &&
+                                  formData.customFieldValues[field._id].includes(option)
+                                }
+                                onChange={(e) => {
+                                  const current = (formData.customFieldValues && formData.customFieldValues[field._id]) || [];
+                                  if (e.target.checked) {
+                                    handleCustomFieldChange(field._id, [...current, option]);
+                                  } else {
+                                    handleCustomFieldChange(
+                                      field._id,
+                                      current.filter((v) => v !== option)
+                                    );
+                                  }
+                                }}
+                                className="w-4 h-4 accent-primary-600"
+                              />
+                              <span className="text-neutral-700">{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {field.fieldType === 'checkbox' && (
-                    <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                      {field.options.map((option) => (
-                        <label key={option} style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-                          <input
-                            type="checkbox"
-                            value={option}
-                            checked={
-                              formData.customFieldValues &&
-                              Array.isArray(formData.customFieldValues[field._id]) &&
-                              formData.customFieldValues[field._id].includes(option)
-                            }
-                            onChange={(e) => {
-                              const current = (formData.customFieldValues && formData.customFieldValues[field._id]) || [];
-                              if (e.target.checked) {
-                                handleCustomFieldChange(field._id, [...current, option]);
-                              } else {
-                                handleCustomFieldChange(
-                                  field._id,
-                                  current.filter((v) => v !== option)
-                                );
-                              }
-                            }}
-                          />
-                          {option}
-                        </label>
-                      ))}
-                    </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <div style={styles.formButtons}>
-              <button type="submit" style={styles.submitBtn}>
-                {editingId ? 'Update Product' : 'Create Product'}
-              </button>
-              <button type="button" onClick={resetForm} style={styles.cancelBtn}>
-                Cancel
+                {/* Form Buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-neutral-200">
+                  <button type="submit" className="btn-primary px-6 py-2.5 flex-1 sm:flex-none">
+                    {editingId ? '💾 Update Product' : '➕ Create Product'}
+                  </button>
+                  <button type="button" onClick={resetForm} className="btn-outline px-6 py-2.5 flex-1 sm:flex-none">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Products Table/Empty State */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4 animate-pulse">
+                <span className="text-white text-3xl">⏳</span>
+              </div>
+              <p className="text-neutral-600 font-medium">Loading products...</p>
+            </div>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="card shadow-lg border-2 border-dashed border-neutral-300 py-16">
+            <div className="text-center">
+              <p className="text-5xl mb-4">📭</p>
+              <p className="text-xl font-semibold text-neutral-900 mb-2">No Products Found</p>
+              <p className="text-neutral-600 mb-6">Start by creating your first product to get going!</p>
+              <button
+                onClick={() => setShowForm(true)}
+                className="btn-primary px-6 py-2.5"
+              >
+                ➕ Create First Product
               </button>
             </div>
-          </form>
-        </div>
-      )}
-
-      {loading ? (
-        <div style={styles.loading}>Loading products...</div>
-      ) : products.length === 0 ? (
-        <div style={styles.empty}>No products found. Create your first product!</div>
-      ) : (
-        <div style={styles.tableContainer}>
-          <table style={styles.table}>
-            <thead>
-              <tr style={styles.headerRow}>
-                <th style={styles.th}>Product Name</th>
-                <th style={styles.th}>SKU</th>
-                <th style={styles.th}>Category</th>
-                <th style={styles.th}>Price</th>
-                <th style={styles.th}>Quantity</th>
-                <th style={styles.th}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product._id} style={styles.row}>
-                  <td style={styles.td}>{product.name}</td>
-                  <td style={styles.td}>{product.sku}</td>
-                  <td style={styles.td}>{product.category || '-'}</td>
-                  <td style={styles.td}>${product.price.toFixed(2)}</td>
-                  <td style={styles.td}>{product.quantity}</td>
-                  <td style={styles.td}>
-                    <div style={styles.actionButtons}>
-                      <button
-                        onClick={() => handleEdit(product)}
-                        style={styles.editBtn}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(product._id)}
-                        style={styles.deleteBtn}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="card shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-primary-50 to-secondary-50 border-b-2 border-primary-200">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Product</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">SKU</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Category</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Price</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Qty</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-200">
+                  {products.map((product) => (
+                    <tr key={product._id} className="hover:bg-neutral-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div>
+                          <p className="font-semibold text-neutral-900">{product.name}</p>
+                          {product.description && (
+                            <p className="text-sm text-neutral-600 truncate">{product.description}</p>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-neutral-700 font-mono text-sm">{product.sku}</td>
+                      <td className="px-6 py-4">
+                        <span className="badge-secondary text-xs">
+                          {product.category || '—'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-primary-600">
+                        ${product.price.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4 text-neutral-700">{product.quantity}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="btn-outline px-3 py-1.5 text-xs font-semibold"
+                          >
+                            ✎ Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product._id)}
+                            className="btn-danger px-3 py-1.5 text-xs font-semibold"
+                          >
+                            🗑 Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="px-6 py-4 bg-neutral-50 border-t border-neutral-200 text-sm text-neutral-600">
+              Total Products: <span className="font-bold text-neutral-900">{products.length}</span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '20px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '30px',
-    borderBottom: '1px solid #dee2e6',
-    paddingBottom: '20px',
-  },
-  title: {
-    margin: 0,
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  addBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  alert_error: {
-    backgroundColor: '#f8d7da',
-    color: '#721c24',
-    padding: '12px',
-    borderRadius: '4px',
-    marginBottom: '20px',
-    border: '1px solid #f5c6cb',
-  },
-  alert_success: {
-    backgroundColor: '#d4edda',
-    color: '#155724',
-    padding: '12px',
-    borderRadius: '4px',
-    marginBottom: '20px',
-    border: '1px solid #c3e6cb',
-  },
-  formContainer: {
-    backgroundColor: '#f9f9f9',
-    padding: '20px',
-    borderRadius: '8px',
-    marginBottom: '30px',
-    border: '1px solid #dee2e6',
-  },
-  form: {
-    marginTop: '20px',
-  },
-  formGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '20px',
-    marginBottom: '20px',
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  label: {
-    marginBottom: '8px',
-    fontWeight: 'bold',
-    color: '#333',
-    fontSize: '14px',
-  },
-  input: {
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '14px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  formButtons: {
-    display: 'flex',
-    gap: '10px',
-  },
-  submitBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold',
-  },
-  cancelBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#6c757d',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '40px',
-    color: '#666',
-  },
-  empty: {
-    textAlign: 'center',
-    padding: '40px',
-    color: '#999',
-    fontSize: '16px',
-  },
-  tableContainer: {
-    overflowX: 'auto',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  headerRow: {
-    backgroundColor: '#f0f0f0',
-  },
-  th: {
-    padding: '12px',
-    textAlign: 'left',
-    borderBottom: '2px solid #ddd',
-    fontWeight: 'bold',
-    fontSize: '14px',
-  },
-  td: {
-    padding: '12px',
-    borderBottom: '1px solid #ddd',
-    fontSize: '14px',
-  },
-  row: {
-    backgroundColor: 'white',
-    transition: 'background-color 0.2s',
-  },
-  actionButtons: {
-    display: 'flex',
-    gap: '8px',
-  },
-  editBtn: {
-    padding: '6px 12px',
-    backgroundColor: '#ffc107',
-    color: '#333',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px',
-    fontWeight: 'bold',
-  },
-  deleteBtn: {
-    padding: '6px 12px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px',
-    fontWeight: 'bold',
-  },
-};

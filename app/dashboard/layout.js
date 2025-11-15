@@ -17,53 +17,34 @@ export default function DashboardLayout({ children }) {
     setUser(JSON.parse(storedUser));
   }, [router]);
 
-  if (!user) return <div style={{padding: '20px'}}>Loading...</div>;
+  if (!user) return (
+    <div className="p-6 text-center text-neutral-600">
+      <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-600 rounded-full mb-3 animate-pulse">
+        <span className="text-white">⏳</span>
+      </div>
+      <p>Loading...</p>
+    </div>
+  );
 
   return (
-    <div style={styles.container}>
+    <div className="flex min-h-screen bg-neutral-100">
       <Sidebar />
-      <div style={styles.mainContent}>
-        <div style={styles.header}>
-          <h1 style={styles.headerTitle}>Welcome, {user.name}</h1>
-          <p style={styles.headerSubtitle}>{user.email}</p>
+      <div className="ml-64 flex-1 transition-all duration-300">
+        {/* Header */}
+        <div className="bg-white border-b border-neutral-200 shadow-sm sticky top-0 z-40">
+          <div className="px-8 py-6 max-w-7xl mx-auto">
+            <h1 className="text-2xl font-bold text-neutral-900 mb-1">
+              Welcome, <span className="text-primary-600">{user.name}</span>!
+            </h1>
+            <p className="text-sm text-neutral-600">{user.email}</p>
+          </div>
         </div>
-        <div style={styles.content}>
+
+        {/* Main Content */}
+        <div className="px-8 py-8 max-w-7xl mx-auto">
           {children}
         </div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
-  },
-  mainContent: {
-    marginLeft: '250px',
-    flex: 1,
-    transition: 'margin-left 0.3s ease',
-  },
-  header: {
-    backgroundColor: 'white',
-    padding: '20px 40px',
-    borderBottom: '1px solid #dee2e6',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  },
-  headerTitle: {
-    margin: '0 0 5px 0',
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  headerSubtitle: {
-    margin: 0,
-    fontSize: '14px',
-    color: '#666',
-  },
-  content: {
-    padding: '30px 40px',
-  },
-};

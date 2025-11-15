@@ -3,6 +3,8 @@ export const metadata = {
   description: 'Complete Next.js full-stack ERP system with authentication',
 };
 
+import './globals.css';
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
