@@ -229,7 +229,7 @@ export async function PUT(request) {
       { returnDocument: 'after' }
     );
 
-    if (!result.value) {
+    if (!result._id) {
       return Response.json({ error: 'Supplier not found' }, { status: 404 });
     }
 

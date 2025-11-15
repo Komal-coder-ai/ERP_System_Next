@@ -37,7 +37,7 @@ export default function EditSupplierPage() {
     supplierRating: '0',
     supplierStatus: 'active',
   });
-
+  
   useEffect(() => {
     if (!supplierId) {
       alert(t('supplierNotFound'));
