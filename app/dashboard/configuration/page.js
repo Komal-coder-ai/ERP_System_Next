@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function ConfigurationPage() {
   const [fields, setFields] = useState([]);
@@ -64,7 +65,10 @@ export default function ConfigurationPage() {
     try {
       const token = localStorage.getItem('token');
       const options =
-        formData.fieldType === 'radio' || formData.fieldType === 'checkbox'
+        formData.fieldType === 'radio' || 
+        formData.fieldType === 'checkbox' ||
+        formData.fieldType === 'select-single' ||
+        formData.fieldType === 'select-multi'
           ? formData.options.split(',').map((opt) => opt.trim())
           : [];
 
@@ -115,13 +119,7 @@ export default function ConfigurationPage() {
   };
 
   const handleEdit = (field) => {
-    setFormData({
-      fieldName: field.fieldName,
-      fieldType: field.fieldType,
-      options: field.options ? field.options.join(', ') : '',
-    });
-    setEditingId(field._id);
-    setShowForm(true);
+    window.location.href = `/dashboard/configuration/edit?id=${field._id}`;
   };
 
   const handleDelete = async (id) => {
@@ -167,17 +165,12 @@ export default function ConfigurationPage() {
             <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900">⚙️ Configuration</h1>
             <p className="text-neutral-600 text-sm mt-1">Manage custom product fields</p>
           </div>
-          <button
-            onClick={() => {
-              if (showForm) resetForm();
-              else setShowForm(true);
-            }}
-            className={`mt-4 sm:mt-0 px-6 py-2.5 rounded-lg font-semibold transition-all ${
-              showForm ? 'btn-danger' : 'btn-primary'
-            }`}
+          <Link
+            href="/dashboard/configuration/add"
+            className="mt-4 sm:mt-0 px-6 py-2.5 rounded-lg font-semibold transition-all btn-primary"
           >
-            {showForm ? '✕ Cancel' : '+ Add Field'}
-          </button>
+            + Add Field
+          </Link>
         </div>
 
         {/* Alerts */}
@@ -194,17 +187,7 @@ export default function ConfigurationPage() {
           </div>
         )}
 
-        {/* Form */}
-        {showForm && (
-          <div className="card shadow-lg mb-8 border-l-4 border-accent-600">
-            <div className="card-header bg-gradient-to-r from-accent-50 to-secondary-50 border-b border-accent-100">
-              <h2 className="text-2xl font-bold text-neutral-900">
-                {editingId ? '✎ Edit Custom Field' : '➕ Create Custom Field'}
-              </h2>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Fields Display */}
                   {/* Field Label */}
                   <div className="flex flex-col">
                     <label className="text-sm font-semibold text-neutral-700 mb-2">
@@ -236,11 +219,16 @@ export default function ConfigurationPage() {
                       <option value="number">🔢 Number</option>
                       <option value="radio">🔘 Radio Button</option>
                       <option value="checkbox">☑️ Checkbox</option>
+                      <option value="select-single">📋 Dropdown (Single Select)</option>
+                      <option value="select-multi">📋 Dropdown (Multi Select)</option>
                     </select>
                   </div>
 
-                  {/* Options - Show only for radio/checkbox */}
-                  {(formData.fieldType === 'radio' || formData.fieldType === 'checkbox') && (
+                  {/* Options - Show only for radio/checkbox/select */}
+                  {(formData.fieldType === 'radio' || 
+                    formData.fieldType === 'checkbox' ||
+                    formData.fieldType === 'select-single' ||
+                    formData.fieldType === 'select-multi') && (
                     <div className="sm:col-span-2 flex flex-col">
                       <label className="text-sm font-semibold text-neutral-700 mb-2">
                         Options <span className="text-neutral-500 text-xs">(comma-separated)</span>
@@ -259,22 +247,7 @@ export default function ConfigurationPage() {
                     </div>
                   )}
                 </div>
-
-                {/* Form Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-neutral-200">
-                  <button type="submit" className="btn-primary px-6 py-2.5 flex-1 sm:flex-none">
-                    {editingId ? '💾 Update Field' : '➕ Create Field'}
-                  </button>
-                  <button type="button" onClick={resetForm} className="btn-outline px-6 py-2.5 flex-1 sm:flex-none">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Fields Grid/Empty State */}
+        {/* Fields Display */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">
@@ -290,12 +263,12 @@ export default function ConfigurationPage() {
               <p className="text-5xl mb-4">🎯</p>
               <p className="text-xl font-semibold text-neutral-900 mb-2">No Custom Fields Yet</p>
               <p className="text-neutral-600 mb-6">Create custom fields to customize your product forms!</p>
-              <button
-                onClick={() => setShowForm(true)}
-                className="btn-primary px-6 py-2.5"
+              <Link
+                href="/dashboard/configuration/add"
+                className="btn-primary px-6 py-2.5 inline-block"
               >
                 ➕ Create First Field
-              </button>
+              </Link>
             </div>
           </div>
         ) : (
@@ -312,12 +285,17 @@ export default function ConfigurationPage() {
                       field.fieldType === 'text' ? 'bg-primary-600' :
                       field.fieldType === 'number' ? 'bg-secondary-600' :
                       field.fieldType === 'radio' ? 'bg-accent-600' :
-                      'bg-success-600'
+                      field.fieldType === 'checkbox' ? 'bg-success-600' :
+                      field.fieldType === 'select-single' ? 'bg-blue-600' :
+                      field.fieldType === 'select-multi' ? 'bg-purple-600' :
+                      'bg-gray-600'
                     }`}>
                       {field.fieldType === 'text' && '📝 Text'}
                       {field.fieldType === 'number' && '🔢 Number'}
                       {field.fieldType === 'radio' && '🔘 Radio'}
                       {field.fieldType === 'checkbox' && '☑️ Check'}
+                      {field.fieldType === 'select-single' && '📋 Select'}
+                      {field.fieldType === 'select-multi' && '📋 Multi'}
                     </span>
                   </div>
 
@@ -356,7 +334,7 @@ export default function ConfigurationPage() {
           </div>
         )}
       </div>
-    </div>
+    
   );
 }
 

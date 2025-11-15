@@ -2,22 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [customFields, setCustomFields] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    sku: '',
-    description: '',
-    price: '',
-    quantity: '',
-    category: '',
-    customFieldValues: {},
-  });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
@@ -69,81 +59,8 @@ export default function ProductsPage() {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleCustomFieldChange = (fieldId, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      customFieldValues: {
-        ...prev.customFieldValues,
-        [fieldId]: value,
-      },
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    try {
-      const token = localStorage.getItem('token');
-      let response;
-
-      if (editingId) {
-        response = await fetch(`/api/products/[id]?id=${editingId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        });
-      } else {
-        response = await fetch('/api/products', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(formData),
-        });
-      }
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || 'Failed to save product');
-        return;
-      }
-
-      setSuccess(editingId ? 'Product updated successfully' : 'Product created successfully');
-      resetForm();
-      loadProducts();
-    } catch (err) {
-      setError('Error saving product');
-      console.error(err);
-    }
-  };
-
   const handleEdit = (product) => {
-    setFormData({
-      name: product.name,
-      sku: product.sku,
-      description: product.description,
-      price: product.price,
-      quantity: product.quantity,
-      category: product.category,
-      customFieldValues: product.customFieldValues || {},
-    });
-    setEditingId(product._id);
-    setShowForm(true);
+    router.push(`/dashboard/products/edit?id=${product._id}`);
   };
 
   const handleDelete = async (id) => {
@@ -170,20 +87,6 @@ export default function ProductsPage() {
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      sku: '',
-      description: '',
-      price: '',
-      quantity: '',
-      category: '',
-      customFieldValues: {},
-    });
-    setEditingId(null);
-    setShowForm(false);
-  };
-
   return (
     <div className="min-h-screen bg-neutral-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -193,19 +96,12 @@ export default function ProductsPage() {
             <h1 className="text-3xl sm:text-4xl font-bold text-neutral-900">📦 Products</h1>
             <p className="text-neutral-600 text-sm mt-1">Manage your product catalog</p>
           </div>
-          <button
-            onClick={() => {
-              if (showForm) resetForm();
-              else setShowForm(true);
-            }}
-            className={`mt-4 sm:mt-0 px-6 py-2.5 rounded-lg font-semibold transition-all ${
-              showForm
-                ? 'btn-danger'
-                : 'btn-success'
-            }`}
+          <Link
+            href="/dashboard/products/add"
+            className="mt-4 sm:mt-0 px-6 py-2.5 rounded-lg font-semibold transition-all btn-success"
           >
-            {showForm ? '✕ Cancel' : '+ Add Product'}
-          </button>
+            + Add Product
+          </Link>
         </div>
 
         {/* Alerts */}
@@ -222,195 +118,7 @@ export default function ProductsPage() {
           </div>
         )}
 
-        {/* Form */}
-        {showForm && (
-          <div className="card shadow-lg mb-8 border-l-4 border-primary-600">
-            <div className="card-header bg-gradient-to-r from-primary-50 to-secondary-50 border-b border-primary-100">
-              <h2 className="text-2xl font-bold text-neutral-900">
-                {editingId ? '✎ Edit Product' : '➕ Create New Product'}
-              </h2>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Product Name */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">
-                      Product Name <span className="text-danger-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="input-field"
-                      placeholder="Enter product name"
-                    />
-                  </div>
-
-                  {/* SKU */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">
-                      SKU <span className="text-danger-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="sku"
-                      value={formData.sku}
-                      onChange={handleInputChange}
-                      required
-                      className="input-field disabled:bg-neutral-100"
-                      placeholder="Enter SKU"
-                      disabled={!!editingId}
-                    />
-                  </div>
-
-                  {/* Price */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">
-                      Price <span className="text-danger-600">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name="price"
-                      value={formData.price}
-                      onChange={handleInputChange}
-                      required
-                      step="0.01"
-                      className="input-field"
-                      placeholder="0.00"
-                    />
-                  </div>
-
-                  {/* Quantity */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">Quantity</label>
-                    <input
-                      type="number"
-                      name="quantity"
-                      value={formData.quantity}
-                      onChange={handleInputChange}
-                      className="input-field"
-                      placeholder="0"
-                    />
-                  </div>
-
-                  {/* Category */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">Category</label>
-                    <input
-                      type="text"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleInputChange}
-                      className="input-field"
-                      placeholder="e.g. Electronics"
-                    />
-                  </div>
-
-                  {/* Description - Full Width */}
-                  <div className="sm:col-span-2 lg:col-span-3 flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">Description</label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      className="input-field min-h-24 resize-none"
-                      placeholder="Enter detailed product description"
-                    />
-                  </div>
-
-                  {/* Custom Fields */}
-                  {customFields.map((field) => (
-                    <div key={field._id} className={field.fieldType === 'checkbox' ? 'sm:col-span-2 lg:col-span-3' : ''}>
-                      <label className="text-sm font-semibold text-neutral-700 mb-2 block">{field.fieldName}</label>
-                      
-                      {field.fieldType === 'text' && (
-                        <input
-                          type="text"
-                          value={(formData.customFieldValues && formData.customFieldValues[field._id]) || ''}
-                          onChange={(e) => handleCustomFieldChange(field._id, e.target.value)}
-                          className="input-field"
-                          placeholder={`Enter ${field.fieldName}`}
-                        />
-                      )}
-
-                      {field.fieldType === 'number' && (
-                        <input
-                          type="number"
-                          value={(formData.customFieldValues && formData.customFieldValues[field._id]) || ''}
-                          onChange={(e) => handleCustomFieldChange(field._id, e.target.value)}
-                          className="input-field"
-                          placeholder={`Enter ${field.fieldName}`}
-                        />
-                      )}
-
-                      {field.fieldType === 'radio' && (
-                        <div className="flex flex-wrap gap-4">
-                          {field.options.map((option) => (
-                            <label key={option} className="flex items-center space-x-2 cursor-pointer">
-                              <input
-                                type="radio"
-                                name={field._id}
-                                value={option}
-                                checked={(formData.customFieldValues && formData.customFieldValues[field._id]) === option}
-                                onChange={(e) => handleCustomFieldChange(field._id, e.target.value)}
-                                className="w-4 h-4 accent-primary-600"
-                              />
-                              <span className="text-neutral-700">{option}</span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-
-                      {field.fieldType === 'checkbox' && (
-                        <div className="space-y-3">
-                          {field.options.map((option) => (
-                            <label key={option} className="flex items-center space-x-2 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                value={option}
-                                checked={
-                                  formData.customFieldValues &&
-                                  Array.isArray(formData.customFieldValues[field._id]) &&
-                                  formData.customFieldValues[field._id].includes(option)
-                                }
-                                onChange={(e) => {
-                                  const current = (formData.customFieldValues && formData.customFieldValues[field._id]) || [];
-                                  if (e.target.checked) {
-                                    handleCustomFieldChange(field._id, [...current, option]);
-                                  } else {
-                                    handleCustomFieldChange(
-                                      field._id,
-                                      current.filter((v) => v !== option)
-                                    );
-                                  }
-                                }}
-                                className="w-4 h-4 accent-primary-600"
-                              />
-                              <span className="text-neutral-700">{option}</span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Form Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-neutral-200">
-                  <button type="submit" className="btn-primary px-6 py-2.5 flex-1 sm:flex-none">
-                    {editingId ? '💾 Update Product' : '➕ Create Product'}
-                  </button>
-                  <button type="button" onClick={resetForm} className="btn-outline px-6 py-2.5 flex-1 sm:flex-none">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        {/* Products Loading or Display */}
 
         {/* Products Table/Empty State */}
         {loading ? (
@@ -428,12 +136,12 @@ export default function ProductsPage() {
               <p className="text-5xl mb-4">📭</p>
               <p className="text-xl font-semibold text-neutral-900 mb-2">No Products Found</p>
               <p className="text-neutral-600 mb-6">Start by creating your first product to get going!</p>
-              <button
-                onClick={() => setShowForm(true)}
-                className="btn-primary px-6 py-2.5"
+              <Link
+                href="/dashboard/products/add"
+                className="btn-primary px-6 py-2.5 inline-block"
               >
                 ➕ Create First Product
-              </button>
+              </Link>
             </div>
           </div>
         ) : (
