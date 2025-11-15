@@ -13,11 +13,15 @@ import InventoryIcon from '@mui/icons-material/Inventory2';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import FactoryIcon from '@mui/icons-material/Factory';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -78,6 +82,58 @@ export default function Sidebar() {
             </Link>
           );
         })}
+
+        {/* Analytics Dropdown */}
+        <div>
+          <div
+            onClick={() => setAnalyticsOpen(!analyticsOpen)}
+            className={`px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-all duration-200 ${
+              pathname && pathname.startsWith('/dashboard/analytics')
+                ? 'bg-primary-600 text-white shadow-md'
+                : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
+            }`}
+            title="Analytics"
+          >
+            <BarChartIcon style={{ fontSize: '20px' }} />
+            {!collapsed && <span className="text-sm font-medium">Analytics</span>}
+            {!collapsed && (analyticsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+          </div>
+
+          {analyticsOpen && (
+            <div className="pl-8 mt-2 space-y-1">
+              <Link href="/dashboard/analytics">
+                <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
+                  {!collapsed && <span className="text-sm">Overview</span>}
+                </div>
+              </Link>
+              <Link href="/dashboard/analytics/products">
+                <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
+                  {!collapsed && <span className="text-sm">Products</span>}
+                </div>
+              </Link>
+              <Link href="/dashboard/analytics/inventory">
+                <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
+                  {!collapsed && <span className="text-sm">Inventory</span>}
+                </div>
+              </Link>
+              <Link href="/dashboard/analytics/sales">
+                <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
+                  {!collapsed && <span className="text-sm">Sales</span>}
+                </div>
+              </Link>
+              <Link href="/dashboard/analytics/suppliers">
+                <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
+                  {!collapsed && <span className="text-sm">Suppliers</span>}
+                </div>
+              </Link>
+              <Link href="/dashboard/analytics/configuration">
+                <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
+                  {!collapsed && <span className="text-sm">Configuration</span>}
+                </div>
+              </Link>
+            </div>
+          )}
+        </div>
       </nav>
 
       {/* Logout Button */}
