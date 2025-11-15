@@ -11,6 +11,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import InventoryIcon from '@mui/icons-material/Inventory2';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -30,6 +31,7 @@ export default function Sidebar() {
     { label: 'Products', icon: StorageIcon, path: '/dashboard/products' },
     { label: 'Inventory', icon: InventoryIcon, path: '/dashboard/inventory' },
     { label: 'Sales', icon: ShoppingCartIcon, path: '/dashboard/sales' },
+    { label: 'Customers', icon: PersonIcon, path: '/dashboard/customers' },
     { label: 'Configuration', icon: SettingsIcon, path: '/dashboard/configuration' },
     { label: 'Settings', icon: SettingsIcon, path: '/dashboard/settings' },
   ];
