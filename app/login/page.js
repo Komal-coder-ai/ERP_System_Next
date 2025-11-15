@@ -150,7 +150,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full bg-primary-600 text-white py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors ${
+                className={`w-full bg-black text-white py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-colors ${
                   loading ? 'opacity-75 cursor-not-allowed' : ''
                 }`}
               >
