@@ -3,10 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { useTheme } from '@/app/context/ThemeContext';
+import { getTranslation } from '@/app/lib/translations';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const { language, mounted } = useLanguage();
+  const { isDark } = useTheme();
+
+  const t = (key) => getTranslation(language, key);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -23,29 +30,29 @@ export default function Dashboard() {
     router.push('/login');
   };
 
-  if (!user) {
+  if (!user || !mounted) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+      <div className={`flex items-center justify-center min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-gradient-to-br from-neutral-50 to-neutral-100'}`}>
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
             <span className="text-white text-3xl">⏳</span>
           </div>
-          <p className="text-lg font-medium text-neutral-600">Loading dashboard...</p>
+          <p className={`text-lg font-medium ${isDark ? 'text-neutral-400' : 'text-neutral-600'}`}>{t('loading')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
+    <div className={isDark ? 'min-h-screen bg-neutral-900' : 'min-h-screen bg-neutral-100'}>
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Welcome Section */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-neutral-900 mb-2">
-            Welcome back, <span className="text-primary-600">{user.name}</span>!
+          <h1 className={`text-4xl font-bold mb-2 ${isDark ? 'text-white' : 'text-neutral-900'}`}>
+            {t('welcomeBack')}, <span className="text-primary-600">{user.name}</span>!
           </h1>
-          <p className="text-neutral-600">Manage your ERP system efficiently from here</p>
+          <p className={isDark ? 'text-neutral-400' : 'text-neutral-600'}>Manage your ERP system efficiently from here</p>
         </div>
 
         {/* User Information Card */}

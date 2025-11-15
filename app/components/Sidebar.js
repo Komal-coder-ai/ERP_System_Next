@@ -31,6 +31,7 @@ export default function Sidebar() {
     { label: 'Inventory', icon: InventoryIcon, path: '/dashboard/inventory' },
     { label: 'Sales', icon: ShoppingCartIcon, path: '/dashboard/sales' },
     { label: 'Configuration', icon: SettingsIcon, path: '/dashboard/configuration' },
+    { label: 'Settings', icon: SettingsIcon, path: '/dashboard/settings' },
   ];
 
   return (
