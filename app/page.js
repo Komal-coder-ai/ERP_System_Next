@@ -164,47 +164,6 @@ export default function Home() {
       </footer>
     </div>
   );
-  },
-  title: {
-    fontSize: '48px',
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: '10px',
-  },
-  subtitle: {
-    fontSize: '18px',
-    color: '#666',
-    marginBottom: '40px',
-    lineHeight: '1.6',
-  },
-  buttonContainer: {
-    display: 'flex',
-    gap: '20px',
-    justifyContent: 'center',
-    marginBottom: '60px',
-  },
-  button: {
-    padding: '12px 30px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    textDecoration: 'none',
-    borderRadius: '4px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-    display: 'inline-block',
-  },
-  features: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '20px',
-    marginTop: '40px',
-  },
-  feature: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  },
-};
+  
+}
+ 
