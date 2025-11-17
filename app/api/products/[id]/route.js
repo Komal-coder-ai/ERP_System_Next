@@ -87,10 +87,18 @@ export async function PUT(req) {
       );
     }
 
-    const { name, sku, description, price, quantity, category, customFieldValues } = await req.json();
+    const { name, sku, description, price, quantity, category, customFieldValues, images } = await req.json();
 
     const { db } = await connectToDatabase();
     const productsCollection = db.collection('products');
+
+    // Normalize images so only one isPrimary
+    let normalizedImages = Array.isArray(images) ? images.map(img => ({ ...img })) : undefined;
+    if (Array.isArray(normalizedImages)) {
+      if (normalizedImages.length > 0 && !normalizedImages.some(i => i.isPrimary)) {
+        normalizedImages[0].isPrimary = true;
+      }
+    }
 
     const result = await productsCollection.updateOne(
       { _id: new ObjectId(productId) },
@@ -103,6 +111,7 @@ export async function PUT(req) {
           quantity: quantity ? parseInt(quantity) : undefined,
           category: category || undefined,
           customFieldValues: customFieldValues || undefined,
+          images: normalizedImages || undefined,
           updatedAt: new Date(),
         },
       }

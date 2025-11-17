@@ -55,6 +55,15 @@ export default async function ProductsAnalytics() {
     labels.push(d.toISOString().slice(0,10));
   }
 
+  // metrics
+  let total = 0, active = 0, utilization = 0;
+  try {
+    const { db } = await connectToDatabase();
+    total = await db.collection('products').countDocuments();
+    try { active = await db.collection('products').countDocuments({ isActive: true }); } catch { active = 0; }
+    utilization = total ? Math.round((active/total)*100) : 0;
+  } catch (e) { }
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -67,6 +76,21 @@ export default async function ProductsAnalytics() {
             <LineChart data={trend} labels={labels} height={160} />
           </div>
           <Link href="/dashboard/products" className="text-sm text-primary-500">Open Products</Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <div className="p-3 bg-white/5 border border-neutral-800 rounded-lg">
+          <div className="text-xs text-neutral-400">Total Products</div>
+          <div className="text-lg font-semibold">{total}</div>
+        </div>
+        <div className="p-3 bg-white/5 border border-neutral-800 rounded-lg">
+          <div className="text-xs text-neutral-400">Active Products</div>
+          <div className="text-lg font-semibold">{active}</div>
+        </div>
+        <div className="p-3 bg-white/5 border border-neutral-800 rounded-lg">
+          <div className="text-xs text-neutral-400">Active %</div>
+          <div className="text-lg font-semibold">{utilization}%</div>
         </div>
       </div>
       <div className="bg-white/5 border border-neutral-800 rounded-lg p-4">

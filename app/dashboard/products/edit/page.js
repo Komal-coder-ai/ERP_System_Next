@@ -20,6 +20,7 @@ export default function EditProductPage() {
     quantity: '',
     category: '',
     customFieldValues: {},
+    images: [],
   });
   const [error, setError] = useState('');
 
@@ -51,6 +52,7 @@ export default function EditProductPage() {
           quantity: data.product.quantity || '',
           category: data.product.category || '',
           customFieldValues: data.product.customFieldValues || {},
+          images: data.product.images || [],
         });
       } else {
         setError('Failed to load product');
@@ -129,6 +131,36 @@ export default function EditProductPage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleImageFiles = async (files) => {
+    const fileArray = Array.from(files);
+    const newImages = await Promise.all(fileArray.map(async (f, idx) => {
+      const dataUrl = await new Promise((res, rej) => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.onerror = () => rej('Failed to read file');
+        reader.readAsDataURL(f);
+      });
+      return { url: dataUrl, alt: f.name, isPrimary: false };
+    }));
+
+    setFormData(prev => {
+      const all = [...(prev.images || []), ...newImages];
+      if (!all.some(img => img.isPrimary) && all.length > 0) all[0].isPrimary = true;
+      return { ...prev, images: all };
+    });
+  }
+
+  const setPrimaryImage = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.map((img, i) => ({ ...img, isPrimary: i === index })),
+    }));
+  };
+
+  const removeImage = (index) => {
+    setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }));
   };
 
   if (loading) {
@@ -359,6 +391,34 @@ export default function EditProductPage() {
                     )}
                   </div>
                 ))}
+                {/* Images */}
+                <div className="sm:col-span-2 lg:col-span-3 flex flex-col">
+                  <label className="text-sm font-semibold text-neutral-700 mb-2">Product Images</label>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => handleImageFiles(e.target.files)}
+                    className="input-field"
+                  />
+
+                  <div className="mt-3 grid grid-cols-3 gap-2">
+                    {(formData.images || []).map((img, idx) => (
+                      <div key={idx} className="relative">
+                        <img src={img.url} alt={img.alt || 'image'} className="w-full h-24 object-cover rounded-md" />
+                        <div className="absolute left-2 top-2 bg-white/70 rounded-full p-1">
+                          <input
+                            type="radio"
+                            checked={!!img.isPrimary}
+                            onChange={() => setPrimaryImage(idx)}
+                            name="primaryImage"
+                          />
+                        </div>
+                        <button type="button" onClick={() => removeImage(idx)} className="absolute right-2 top-2 bg-red-600 text-white rounded px-2 text-xs">Remove</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Buttons */}

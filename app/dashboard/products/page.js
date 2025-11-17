@@ -3,9 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ImageSlider from '../../components/ImageSlider';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
+  const [sliderOpen, setSliderOpen] = useState(false);
+  const [sliderImages, setSliderImages] = useState([]);
+  const [sliderIndex, setSliderIndex] = useState(0);
   const [customFields, setCustomFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -150,6 +154,7 @@ export default function ProductsPage() {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-primary-50 to-secondary-50 border-b-2 border-primary-200">
                   <tr>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Image</th>
                     <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Product</th>
                     <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">SKU</th>
                     <th className="px-6 py-4 text-left text-sm font-bold text-neutral-900">Category</th>
@@ -161,6 +166,19 @@ export default function ProductsPage() {
                 <tbody className="divide-y divide-neutral-200">
                   {products.map((product) => (
                     <tr key={product._id} className="hover:bg-neutral-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="w-20 h-20 overflow-hidden rounded-md">
+                          {product.images && product.images.length > 0 ? (
+                            <img src={(product.images.find(i => i.isPrimary) || product.images[0]).url} alt={product.name} className="w-full h-full object-cover cursor-pointer" onClick={() => { 
+                              const primary = product.images.find(i => i.isPrimary);
+                              const ordered = primary ? [primary, ...product.images.filter(i => !i.isPrimary)] : product.images;
+                              setSliderImages(ordered); setSliderIndex(0); setSliderOpen(true);
+                            }} />
+                          ) : (
+                            <div className="w-full h-full bg-neutral-200 flex items-center justify-center text-neutral-500">No Image</div>
+                          )}
+                        </div>
+                      </td>
                       <td className="px-6 py-4">
                         <div>
                           <p className="font-semibold text-neutral-900">{product.name}</p>
@@ -206,6 +224,9 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+      {sliderOpen && (
+        <ImageSlider images={sliderImages} initialIndex={sliderIndex} onClose={() => setSliderOpen(false)} />
+      )}
     </div>
   );
 }

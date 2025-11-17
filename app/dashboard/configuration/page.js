@@ -187,43 +187,7 @@ export default function ConfigurationPage() {
           </div>
         )}
 
-        {/* Fields Display */}
-                  {/* Field Label */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">
-                      Field Label <span className="text-danger-600">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name="fieldName"
-                      value={formData.fieldName}
-                      onChange={handleInputChange}
-                      required
-                      className="input-field"
-                      placeholder="e.g., Color, Size, Manufacturer"
-                    />
-                  </div>
-
-                  {/* Field Type */}
-                  <div className="flex flex-col">
-                    <label className="text-sm font-semibold text-neutral-700 mb-2">
-                      Field Type <span className="text-danger-600">*</span>
-                    </label>
-                    <select
-                      name="fieldType"
-                      value={formData.fieldType}
-                      onChange={handleInputChange}
-                      className="input-field"
-                    >
-                      <option value="text">📝 Text</option>
-                      <option value="number">🔢 Number</option>
-                      <option value="radio">🔘 Radio Button</option>
-                      <option value="checkbox">☑️ Checkbox</option>
-                      <option value="select-single">📋 Dropdown (Single Select)</option>
-                      <option value="select-multi">📋 Dropdown (Multi Select)</option>
-                    </select>
-                  </div>
-
+     
                   {/* Options - Show only for radio/checkbox/select */}
                   {(formData.fieldType === 'radio' || 
                     formData.fieldType === 'checkbox' ||
