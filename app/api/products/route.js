@@ -22,7 +22,7 @@ export async function POST(req) {
       );
     }
 
-    const { name, sku, description, price, quantity, category, customFieldValues, images } = await req.json();
+    const { name, sku, description, price, quantity, category, customFieldValues } = await req.json();
 
     if (!name || !sku || !price) {
       return new Response(
@@ -44,12 +44,6 @@ export async function POST(req) {
     }
 
     // Create product
-    // Normalize images: ensure only one isPrimary
-    let normalizedImages = Array.isArray(images) ? images.map(img => ({ ...img })) : [];
-    if (normalizedImages.length > 0 && !normalizedImages.some(i => i.isPrimary)) {
-      normalizedImages[0].isPrimary = true;
-    }
-
     const result = await productsCollection.insertOne({
       name,
       sku,
@@ -58,7 +52,6 @@ export async function POST(req) {
       quantity: parseInt(quantity) || 0,
       category: category || '',
       customFieldValues: customFieldValues || {},
-      images: normalizedImages,
       createdBy: decoded.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -73,7 +66,6 @@ export async function POST(req) {
           sku,
           price,
           quantity,
-          images: Array.isArray(images) ? images : [],
         },
       }),
       { status: 201 }

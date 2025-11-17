@@ -22,11 +22,24 @@ export async function GET(req, { params }) {
       );
     }
 
-    const productId = params.id;
+    // Get ID from route params or query params
+    let productId = params.id;
+    if (!productId || productId === '[id]') {
+      const { searchParams } = new URL(req.url);
+      productId = searchParams.get('id');
+    }
 
     if (!productId) {
       return new Response(
         JSON.stringify({ error: 'Product ID required' }),
+        { status: 400 }
+      );
+    }
+
+    // Validate ObjectId format
+    if (!ObjectId.isValid(productId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid product ID format' }),
         { status: 400 }
       );
     }
@@ -76,11 +89,24 @@ export async function PUT(req, { params }) {
       );
     }
 
-    const productId = params.id;
+    // Get ID from route params or query params
+    let productId = params.id;
+    if (!productId || productId === '[id]') {
+      const { searchParams } = new URL(req.url);
+      productId = searchParams.get('id');
+    }
 
     if (!productId) {
       return new Response(
         JSON.stringify({ error: 'Product ID required' }),
+        { status: 400 }
+      );
+    }
+
+    // Validate ObjectId format
+    if (!ObjectId.isValid(productId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid product ID format' }),
         { status: 400 }
       );
     }
@@ -155,11 +181,24 @@ export async function DELETE(req, { params }) {
       );
     }
 
-    const productId = params.id;
+    // Get ID from route params or query params
+    let productId = params.id;
+    if (!productId || productId === '[id]') {
+      const { searchParams } = new URL(req.url);
+      productId = searchParams.get('id');
+    }
 
     if (!productId) {
       return new Response(
         JSON.stringify({ error: 'Product ID required' }),
+        { status: 400 }
+      );
+    }
+
+    // Validate ObjectId format
+    if (!ObjectId.isValid(productId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid product ID format' }),
         { status: 400 }
       );
     }
