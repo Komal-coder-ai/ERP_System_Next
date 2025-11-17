@@ -2,7 +2,7 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { verifyToken } from '@/lib/jwt';
 import { ObjectId } from 'mongodb';
 
-export async function GET(req) {
+export async function GET(req, { params }) {
   try {
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -22,8 +22,7 @@ export async function GET(req) {
       );
     }
 
-    const { searchParams } = new URL(req.url);
-    const productId = searchParams.get('id');
+    const productId = params.id;
 
     if (!productId) {
       return new Response(
@@ -57,7 +56,7 @@ export async function GET(req) {
   }
 }
 
-export async function PUT(req) {
+export async function PUT(req, { params }) {
   try {
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -77,8 +76,7 @@ export async function PUT(req) {
       );
     }
 
-    const { searchParams } = new URL(req.url);
-    const productId = searchParams.get('id');
+    const productId = params.id;
 
     if (!productId) {
       return new Response(
@@ -137,7 +135,7 @@ export async function PUT(req) {
   }
 }
 
-export async function DELETE(req) {
+export async function DELETE(req, { params }) {
   try {
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -157,8 +155,7 @@ export async function DELETE(req) {
       );
     }
 
-    const { searchParams } = new URL(req.url);
-    const productId = searchParams.get('id');
+    const productId = params.id;
 
     if (!productId) {
       return new Response(
