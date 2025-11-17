@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useLanguage } from '@/app/context/LanguageContext';
 import HomeIcon from '@mui/icons-material/Home';
 import StorageIcon from '@mui/icons-material/Storage';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -20,6 +21,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { language } = useLanguage();
   const [collapsed, setCollapsed] = useState(false);
   const [analyticsOpen, setAnalyticsOpen] = useState(false);
 
@@ -42,10 +44,14 @@ export default function Sidebar() {
     { label: 'Settings', icon: SettingsIcon, path: '/dashboard/settings' },
   ];
 
+  const isRtl = language === 'ur' || language === 'urdu';
+
+  const sidebarClass = `sidebar ${isRtl ? 'rtl' : ''} ${collapsed ? 'collapsed' : ''}`;
+
   return (
-    <div className={`fixed left-0 top-0 h-screen bg-neutral-900 border-r border-neutral-800 flex flex-col z-50 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
+    <div className={`fixed ${isRtl ? 'right-0 border-l' : 'left-0 border-r'} top-0 h-screen bg-neutral-900 flex flex-col z-50 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'} ${sidebarClass}`} dir={isRtl ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="px-6 py-6 border-b border-neutral-800 flex items-center gap-3">
+      <div className={`px-6 py-6 border-b border-neutral-800 flex items-center gap-3 ${isRtl ? 'flex-row-reverse' : ''}`}>
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="p-2 rounded-lg hover:bg-neutral-800 transition-colors text-neutral-400 hover:text-white"
@@ -68,16 +74,21 @@ export default function Sidebar() {
           const Icon = item.icon;
           return (
             <Link key={item.path} href={item.path}>
-              <div
+                <div
                 className={`px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-all duration-200 ${
                   isActive(item.path)
                     ? 'bg-primary-600 text-white shadow-md'
                     : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
                 }`}
                 title={item.label}
+                  className={`menu-item px-4 py-3 rounded-lg flex items-center gap-3 cursor-pointer transition-all duration-200 ${
+                    isActive(item.path)
+                      ? 'bg-primary-600 text-white shadow-md'
+                      : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
+                  }`}
               >
                 <Icon style={{ fontSize: '20px' }} />
-                {!collapsed && <span className="text-sm font-medium">{item.label}</span>}
+                {!collapsed && <span className={`text-sm font-medium menu-item-label ${isRtl ? 'text-right' : 'text-left'}`}>{item.label}</span>}
               </div>
             </Link>
           );
@@ -99,8 +110,8 @@ export default function Sidebar() {
             {!collapsed && (analyticsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
           </div>
 
-          {analyticsOpen && (
-            <div className="pl-8 mt-2 space-y-1">
+            {analyticsOpen && (
+              <div className={`${isRtl ? 'pr-8' : 'pl-8'} mt-2 space-y-1`}>
               <Link href="/dashboard/analytics">
                 <div className="px-3 py-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
                   {!collapsed && <span className="text-sm">Overview</span>}
@@ -137,7 +148,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout Button */}
-      <div className="px-3 py-6 border-t border-neutral-800">
+      <div className={`px-3 py-6 border-t border-neutral-800 ${isRtl ? 'text-right' : ''}`}>
         <button
           onClick={handleLogout}
           className="w-full px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center gap-2 justify-center"

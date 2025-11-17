@@ -2,6 +2,7 @@
 
 import Sidebar from '@/app/components/Sidebar';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/app/context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/app/context/ThemeContext';
 
@@ -9,6 +10,8 @@ export default function DashboardLayout({ children }) {
   const [user, setUser] = useState(null);
   const router = useRouter();
   const { isDark, mounted } = useTheme();
+  const { language } = useLanguage();
+  const isRtl = language === 'ur' || language === 'urdu';
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -31,7 +34,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div className={`flex min-h-screen ${isDark ? 'bg-neutral-900' : 'bg-neutral-100'}`}>
       <Sidebar />
-      <div className="ml-64 flex-1 transition-all duration-300">
+      <div className={`content flex-1 transition-all duration-300`}>
         {/* Header */}
         <div className={`${isDark ? 'bg-neutral-800 border-neutral-700' : 'bg-white border-neutral-200'} border-b shadow-sm sticky top-0 z-40`}>
           <div className="px-8 py-6 max-w-7xl mx-auto">

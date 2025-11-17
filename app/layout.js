@@ -6,6 +6,7 @@ export const metadata = {
 import './globals.css';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
+import RTLHandler from './components/RTLHandler';
 
 export default function RootLayout({ children }) {
   return (
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <LanguageProvider>
           <ThemeProvider>
+            <RTLHandler />
             {children}
           </ThemeProvider>
         </LanguageProvider>

@@ -245,4 +245,73 @@
   }
 }
 
+/* RTL Support */
+html.rtl {
+  direction: rtl;
+}
+
+html.rtl .input-field,
+html.rtl input,
+html.rtl textarea,
+html.rtl select {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Sidebar RTL polishing - align icon and label nicely, handle collapsed state */
+.sidebar .menu-item {
+  transition: all 160ms ease;
+}
+
+html.rtl .sidebar .menu-item {
+  flex-direction: row-reverse;
+}
+
+html.rtl .sidebar .menu-item .menu-item-label {
+  text-align: right;
+}
+
+/* collapsed narrow sidebar only shows icons - center them */
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+}
+
+.sidebar.collapsed .menu-item .menu-item-label {
+  display: none;
+}
+
+/* analytics submenu indentation for RTL */
+html.rtl .sidebar .menu-item + .pl-8,
+html.rtl .sidebar .menu-item + .pr-8 {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* layout spacing when sidebar is present */
+.content {
+  margin-left: 16rem; /* ml-64 (64 * 0.25rem = 16rem) */
+  transition: margin 200ms ease;
+}
+
+/* when in RTL, mirror margins */
+html.rtl .content {
+  margin-right: 16rem;
+  margin-left: 0;
+}
+
+/* collapsed sidebar smaller width */
+.sidebar.collapsed + .content {
+  margin-left: 5rem; /* ml-20 - 20 * 0.25rem = 5rem */
+}
+
+html.rtl .sidebar.collapsed + .content {
+  margin-left: 0;
+  margin-right: 5rem;
+}
+
+/* make header/menu logical order more natural in rtl by default */
+html.rtl .space-x-2 {
+  /* spacing stays but direction is reversed where needed */
+}
+
 
